@@ -6,14 +6,14 @@
 # <https://github.com/KFERMercer/OpenWrt-CI>
 #
 
-name: SyncCode from Autobuild Script
+name: Sync Code from eSir Autobuild Script
 
 on:
   push:
     branches: 
       - master
-  schedule:
-    - cron: 0 19 * * *
+#  schedule:
+#    - cron: 0 19 * * *
 
 jobs:
 
@@ -30,15 +30,15 @@ jobs:
         fetch-depth: 0
         lfs: true
 
-    - name: Set git identity
+    - name: Syncing Preparation
       run : |
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --global user.name "github-actions[bot]"
         
-    - name: Load Autobuild Most Updated commits
+    - name: Start Syncing Autobuild Most Updated Changes
       run: git pull https://github.com/esirplayground/AutoBuild-OpenWrt.git --log --no-commit
 
-    - name: Apply commit changes
+    - name: Download All New Changes
       run: |
         if [ -f ./.git/MERGE_MSG ]; then
         mkdir ./tmp && cp ./.git/MERGE_MSG ./tmp/message
@@ -49,7 +49,7 @@ jobs:
         echo "There is no merge commits."
         fi
         
-    - name: Push Commits
+    - name: Update My Script
       env:
         DOWNSTREAM_BRANCH: master
       run: git push origin $DOWNSTREAM_BRANCH
